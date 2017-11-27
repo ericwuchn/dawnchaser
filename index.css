@@ -125,7 +125,7 @@ div.footer {
     position: absolute;
     z-index: 1;
     top: 125%;
-    right: 2%;
+    right: 0%;
     opacity: 0;
     transition: opacity 1s;
 }
