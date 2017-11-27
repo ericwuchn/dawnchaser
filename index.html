@@ -1,0 +1,140 @@
+<html>
+<head>
+<title>dawnchaser.io</title>
+<link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+<link rel="stylesheet" type="text/css" href="index.css">
+<link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Ubuntu" />
+<script type="text/javascript" src="//platform-api.sharethis.com/js/sharethis.js#property=5a0a3e8705073300123e3975&product=sticky-share-buttons"></script>
+</head>
+<body onload="startTime(), getsunrise()">
+<h1>
+		<font color="white">d a w n c h a s e r . i o</font>
+</h1>
+
+<div class="tooltip">Need Help?
+  		<span class="tooltiptext">If you encounter a problem while displaying the information, please check your internet connection and reload the page. This site does not collect any privacy data. <br /><br /> p.s. Try it in fullscreen mode!<br /><br />&copy; Jiayue Wu 2017</span>
+</div>
+
+<div class="elements">
+	
+	<h2>
+		<font color="white"><span id="sunrisetime"></span></font>
+	</h2>
+
+	<h3>
+		<font color="white">estimated sunrise time</font>
+	</h3>
+
+	<h4>
+		<font color="white"><div id="time"></div></font>
+	</h4>
+
+	<h3>
+		<font color="white">local time</font>
+	</h3>
+
+	<h4>
+		<font color="white"><div id="date"></div></font>
+	</h4>
+
+	<h3>
+		<font color="white">date (yy/mm/dd)</font>
+	</h3>
+
+	<h4>
+		<font color="white"><div><span id="city"></span>, <span id="country"></span></div></font>
+	</h4>
+
+	<h3>
+		<font color="white">location</font>
+	</h3>
+
+	<h5>
+		<font color="white"><div>You are standing at <span id="latitude"></span>, <span id="longitude"></span></div></font>
+	</h5>
+
+	
+
+	<div class="footer">
+		<p>&copy; This site uses data from Sunrise Sunset API. Designed by Jiayue Wu in 2017. All rights reserved.</p>
+	</div>
+
+</div>
+
+
+	
+</body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script>
+
+function startTime() {
+    var today = new Date();
+    var noon=new Date(today.getFullYear(),today.getMonth(),today.getDate(),12,0,0);
+    var offset = today.getTimezoneOffset()/60; 
+
+
+    var h = today.getHours()%12;
+    var m = today.getMinutes();
+    var s = today.getSeconds();
+    var ampm = (today.getTime()<noon.getTime())?'AM':'PM';
+    m = checkTime(m);
+    s = checkTime(s);
+    document.getElementById('time').innerHTML =
+    h + ":" + m + ":" + s + " "+ampm;
+    var t = setTimeout(startTime, 500);
+	n =  new Date();
+	y = n.getFullYear();
+	m = n.getMonth() + 1;
+	d = n.getDate();
+	document.getElementById("date").innerHTML = y + "/" + m + "/" + d;    	
+}
+function checkTime(i) {
+    if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
+    return i;
+}
+
+
+</script>
+<script>
+
+	// geoip-db
+        $.ajax({
+            url: "https://geoip-db.com/jsonp",
+            jsonpCallback: "callback",
+            dataType: "jsonp",
+            success: function( geolocation ) {
+                $('#country').html(geolocation.country_name);
+                $('#state').html(geolocation.state);
+                $('#city').html(geolocation.city);
+                $('#latitude').html(geolocation.latitude);
+                $('#longitude').html(geolocation.longitude);
+                $('#ip').html(geolocation.IPv4);            
+				
+            }
+        });  
+        
+</script>
+
+<script>
+function getsunrise(){
+	var today = new Date();
+	var offset = today.getTimezoneOffset()/60; 
+	var lat = document.getElementById("latitude").innerHTML;
+	var lng = parseFloat(document.getElementById("longitude").innerHTML);
+	var lng = lng + 15*offset;
+	
+	var getsunrise = "https://api.sunrise-sunset.org/json?lat="+lat+"&lng="+lng+"&callback=mycallback";
+	   $.ajax({
+            url: getsunrise,
+            jsonpCallback: "callback",
+            dataType: "jsonp",
+            success: function( sunrise ) {
+                $('#sunrisetime').html(sunrise.results.sunrise);
+               
+            }
+        });
+}
+
+</script>
+
+</html>
